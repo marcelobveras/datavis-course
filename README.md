@@ -1,3 +1,6 @@
+## Execício da aula do dia 05/09/2018
+[Exercício da aula 9!](d3_intro/movies_d3.html)<br>
+
 ## Aula do dia 03/09/2018
 
 [index01.html](basic/index01.html)<br>
