@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Ordenando dados</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+<div id="chart1"></div>
+<div id="chart2"></div>
+<div id="chart3"></div>
+<script type="text/javascript">
+    
+
+    function render(data, comparator, title, chartID, labeler, widther, factor, color) {
+        d3.select("#"+chartID).append("h1")
+        .style("text-decoration", "underline")  
+        .text(title);
+
+        d3.select("#"+chartID).selectAll("div.h-bar")
+                .data(data)
+            .enter().append("div")
+            .attr("class", "h-bar")
+            .append("span");
+        
+        d3.select("#"+chartID).selectAll("div.h-bar")
+                .data(data)
+            .attr("class", "h-bar")
+            .style("width", function (d) {
+                return (d[widther]*factor) + "px";
+            })
+            .select("span")
+                .text(labeler);
+        if(comparator)
+            d3.select("body")
+                .select("#"+chartID)
+                .selectAll("div.h-bar") 
+                .sort(comparator);
+        d3.select("#"+chartID).selectAll("div.h-bar")
+            .style("background-color", color)
+    }
+
+    
+    function comparate_attr(attribute, ascending){
+        return function(a,b){
+            if(ascending)
+                return (a[attribute] - b[attribute]);
+            else
+                return -(a[attribute] - b[attribute]);
+        };
+    };
+
+    function show_attr(attribute){
+        return function(a){
+                return a.Film+" ("+a[attribute]+")";;
+        };
+    };
+
+
+    d3.json("data/movies.json").then(function(json){
+        for (var i = 0; i < json.length; i++) { 
+            json[i]["profit"] = json[i]["Worldwide_Gross_M"] - json[i]["Budget_M"]
+        }
+        render(json, comparate_attr("Worldwide_Gross_M", false) , "Arrecadação por filme em milhões", "chart1",show_attr("Worldwide_Gross_M"), "Worldwide_Gross_M", 0.33, "purple");
+        render(json, comparate_attr("Budget_M", false), "Orçamento por filme em milhões", "chart2",show_attr("Budget_M"), "Budget_M",1 , "blue");
+        render(json, comparate_attr("profit", false), "Lucro por filme em milhões", "chart3",show_attr("profit"), "profit",0.2 , "green");
+    });
+
+    
+</script>
+</body>
+</html>
