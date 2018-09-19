@@ -1,3 +1,6 @@
+## Execício da aula do dia 17/09/2018
+[Exercício da aula 12!](d3_update/01_scatterplot.html)<br>
+
 ## Execício da aula do dia 12/09/2018
 [Exercício da aula 11!](d3_scale/movie_scatter.html)<br>
 
