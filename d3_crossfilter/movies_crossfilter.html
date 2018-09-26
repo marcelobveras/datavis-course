@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Movies Cross Filter</title>
+    <link rel="stylesheet" href="css/dc.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/crossfilter.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="js/dc.min.js"></script>
+
+</head>
+
+<body>
+<div id="chart1"></div>
+<div id="chart2"></div>
+<div id="chart3"></div>
+<script type="text/javascript">
+
+    let barChart = dc.barChart('#chart1');
+
+    d3.json("data/movies.json").then(function(data){
+
+        let parseDate = d3.timeParse("%Y");
+        let formatYear = d3.timeFormat("%Y")
+        data.forEach(function(d){
+            d.Year =  parseDate(d.Year);
+            d.Worldwide_Gross_M = +d.Worldwide_Gross_M;
+            d.Budget_M = +d.Budget_M;
+            //d.Profit_M = d.Worldwide_Gross_M-d.Budget_M;
+        });
+
+        let facts = crossfilter(data);
+
+        let YearDim = facts.dimension(function (d) {
+            return d.Year;
+        });
+
+        let MovieGroupByYear = YearDim.group().reduceSum(function(d){
+            return d.Worldwide_Gross_M;
+        });
+
+        let xScale = d3.scaleTime()
+                           .domain([d3.timeYear.offset(YearDim.bottom(1)[0].Year, -1), d3.timeYear.offset(YearDim.top(1)[0].Year)]);
+
+        barChart.width(800)
+             .height(400)
+             .margins({top: 50, right: 50, bottom: 25, left: 40})
+             .dimension(YearDim)
+             .x(xScale)
+             .xUnits(d3.timeYears)
+             .renderHorizontalGridLines(true)
+             .brushOn(false)
+             .centerBar(true)
+             .group(MovieGroupByYear);
+
+        barChart.render();
+
+    });
+
+</script>
+</body>
+</html>
