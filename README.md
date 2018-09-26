@@ -1,3 +1,7 @@
+## Execício da aula do dia 24/09/2018
+[Exercício da aula 14.1!](d3_crossfilter/teslaFace.html)<br>
+[Exercício da aula 14.2!](d3_crossfilter/movies_d3_dc.html)<br>
+
 ## Execício da aula do dia 17/09/2018
 [Exercício da aula 12!](d3_update/01_scatterplot.html)<br>
 
