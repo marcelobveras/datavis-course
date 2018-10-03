@@ -1,3 +1,6 @@
+## Execício da aula do dia 26/09/2018
+[Exercício da EAD](d3_crossfilter_2/earthquakes.html)<br>
+
 ## Execício da aula do dia 17/09/2018
 [Exercício da aula 12!](d3_update/01_scatterplot.html)<br>
 
