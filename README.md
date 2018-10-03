@@ -1,5 +1,5 @@
 ## Execício da aula do dia 26/09/2018
-[Exercício da aula 13!](d3_crossfilter_2/earthquakes.html)<br>
+[Exercício da aula 16!](d3_crossfilter_2/earthquakes.html)<br>
 
 ## Execício da aula do dia 24/09/2018
 [Exercício da aula 14.1!](d3_crossfilter/teslaFace.html)<br>
