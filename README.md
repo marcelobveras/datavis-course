@@ -1,3 +1,6 @@
+## Execício da aula do dia 03/10/2018
+[Exercício da aula 17!](d3_chicago_earthquake/chicago.html)<br>
+
 ## Execício da aula do dia 26/09/2018
 [Exercício da aula 16!](d3_crossfilter_2/earthquakes.html)<br>
 
