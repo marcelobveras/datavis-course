@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
+		integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+		crossorigin=""/>
+	<!-- Make sure you put this AFTER Leaflet's CSS -->
+		<script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+		integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+		crossorigin=""></script>
+
+    <title> Earthquake Table Data</title>
+
+    <!-- Custom styles for this tempvare -->
+	<link rel="stylesheet" href="css/dc.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/crossfilter.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="js/dc.min.js"></script>
+</head>
+<body>
+  <main role="main" class="container">
+    <div class='row'>
+    	<div id="mapid"></div>
+    </div>
+    <div class='row'>
+		    <div id='type-chart' class="col-6">
+		      <h4> Number of crimes by type </h4>
+		    </div>
+		    <div id='time-chart' class="col-6" >
+			  <h4> Number of crimes in time (absolute) </h4>
+		    </div> 
+	</div>
+  </main>
+  <script type="text/javascript">
+	d3.csv("data/chicago_crimes_sep_2018.csv").then(function (data) {
+
+		let typeChart = dc.barChart("#type-chart");
+
+
+		let map = L.map('mapid').setView([41.85,-87.686096772], 10.2);
+			L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
+				attribution: 'Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.',maxZoom: 17
+				}).addTo(map);
+		
+		let colorScale = d3.scaleOrdinal()
+			.domain(["HOMICIDE", "ROBBERY", "BURGLARY"])
+			.range(["#ca0020", "#0571b0", "#fdae61"]);
+
+		data.forEach(function(d){
+			d.dtg = d3.timeParse("%m/%d/%Y")(d.Date);
+			d.lat = +d.Latitude;
+			d.lon = +d.Longitude;
+			d.crimeType = d['Primary Type']
+			let circle = L.circle([d.lat, d.lon], 100, {
+				color: colorScale(d.crimeType),
+				weight: 1,
+				fillColor: '#fecc5c',
+				fillOpacity: 0.5
+				}).addTo(map);
+		});
+
+		let facts = crossfilter(data);
+
+		data.forEach(function(x) {
+               if(x.gender == 'Male') {
+                  x.newdata = 1;
+               } else {
+                  x.newdata = 2;
+               }
+            });
+
+		let crimeDimension =  facts.dimension(function (d){
+			return d.crimeType;	
+		});
+
+		let crimeGroupByType = crimeDimension.group();
+
+		let crimeNunique = crimeDimension.group().reduceCount(function(d) { return d.crimeType; });
+
+		let timeDimension = facts.dimension(function (d){
+			return d.dtg;	
+		});
+
+		var dayDimension = facts.dimension(function(d){
+			return d3.timeDay(d.dtg);
+		});
+
+
+		let xScale = d3.scaleBand()
+
+		typeChart.width(500)
+			.height(420)
+			.xUnits(dc.units.ordinal)
+			.colorAccessor(function(d){
+		        //console.log(d.key);
+		        return d.key;
+		    }).colors(colorScale)
+			.x(xScale)
+            .yAxisLabel("Nº de Ocorrencias")
+            .xAxisLabel("Crimes")  
+			.dimension(crimeDimension)
+		    .group(crimeGroupByType)
+		    .transitionDuration(500)
+		    .centerBar(false)	
+			.gap(1)
+			.elasticY(true);
+
+		
+		    
+		dc.renderAll();
+
+
+	});
+
+	
+	</script>
+	 <!-- Bootstrap javascript files -->
+     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+		
+</body>
+</html>
