@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title> Similar Songs Network</title>
+
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+<main role="main" class="container">
+    <header>
+        <h1>Rede de interação entre personagens</h1>
+    </header>
+    <div id="main" role="main">
+        <div id="vis"></div>
+    </div>
+
+    <footer>
+        <p>Dados: Les Miserables</p>
+
+    </footer>
+</main> <!--! end of #container -->
+<!-- Bootstrap javascript files -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+
+    const width = 960;
+    const height = 800;
+    function nEdges(edges,id) {
+        let n = 0;
+        edges.forEach(function (d) {
+            if (id == d.source.id || id == d.target.id) {
+                n++;
+            }
+        });
+        console.log(n);
+
+        return n*2;
+    };
+    // Create svg element inside #vis element and attribute it to the vis variable
+    const vis = d3.select("#vis")
+        .append("svg")
+        .attr("width", width)
+        .attr("height",height)
+        .attr("viewBox", [-width / 2, -height / 2, width, height]);
+
+    // Read the contents of data/songs.json file and process it as a graph variable
+    d3.json("data/lesmiserables.json").then(function(graph) {
+
+        // Set the nodes and links
+        const nodes = graph.nodes;
+        const links = graph.links;
+        const simulation = forceSimulation(nodes, links).on("tick", ticked);
+
+        const link = vis.append("g")
+            .selectAll("line")
+            .data(links)
+            .enter()
+            .append("line")
+            .attr("class", "link");
+
+        const node = vis.append("g")
+            .selectAll("nodes")
+            .data(nodes)
+            .enter()
+            .append("circle")
+            .attr("r", d => nEdges(links,d.id))
+            .attr("class", "node")
+            .attr("fill", 'yellow')
+            .call(drag(simulation));
+
+        node.append("title")
+            .text(function (d) {
+                return d.id + ' : Total de Arestas: ' + nEdges(links,d.id);
+            });
+        const countExtent = d3.extent(nodes, function(d){
+            return d.playcount;
+        });
+        rScale = d3.scaleSqrt()
+            .range([2,20])
+            .domain(countExtent);
+
+        // define the forceSimulation function that will receive nodes and links and
+        // will return a d3.forceSimulation() object
+        function ticked() {
+            link.attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+            node.attr("cx", d => d.x)
+                .attr("cy", d => d.y)
+                .attr("r", d => nEdges(links,d.id));
+        }
+
+        function drag(simulation){
+            function dragstarted(d) {
+                if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+            function dragged(d) {
+                d.fx = d3.event.x;
+                d.fy = d3.event.y;
+            }
+            function dragended(d) {
+                if (!d3.event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+            return d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended);
+        }
+
+
+
+        function forceSimulation(nodes, links) {
+            return d3.forceSimulation(nodes)
+                .force("link", d3.forceLink(links).id(d => d.id).distance(50))
+                .force("charge", d3.forceManyBody().strength(-50).distanceMax(270))
+                .force("center", d3.forceCenter());
+        }
+
+        // create link svg elements
+
+
+        // create node svg elements
+
+        // define function ticked
+
+        // define function drag
+
+        // define the forceSimulation function that will receive nodes and links and
+        // will return a d3.forceSimulation() object
+
+
+        // create simulation constant using the forceSimulation function defined down below
+    });
+
+
+</script>
+</body>
