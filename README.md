@@ -1,5 +1,10 @@
+## Execício da aula do dia 24/10/2018
+[Exercício da aula 21!] Taxa de homicidios no Ceará(color-d3/crimes.html)<br>
+[Exercício da aula 21!] Taxa de desemprego USA(color-d3/usa.html)<br>
+
 ## Execício da aula do dia 10/10/2018
 [Exercício da aula 18!](d3_networks_trees/songs.html)<br>
+[Exercício da aula 18!](d3_networks_trees/lesmiserables.html)<br>
 
 ## Execício da aula do dia 03/10/2018
 [Exercício da aula 17!](d3_chicago_earthquake/chicago.html)<br>
