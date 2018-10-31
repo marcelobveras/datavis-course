@@ -1,6 +1,6 @@
 ## Execício da aula do dia 24/10/2018
-[Exercício da aula 21!] (color-d3/crimes.html)<br>
-[Exercício da aula 21!] (color-d3/usa.html) <br>
+[Exercício da aula 21!](color-d3/crimes.html)<br>
+[Exercício da aula 21!](color-d3/usa.html) <br>
 
 ## Execício da aula do dia 10/10/2018
 [Exercício da aula 18!](d3_networks_trees/songs.html)<br>
